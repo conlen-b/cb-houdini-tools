@@ -12,7 +12,7 @@ accept, and press the new button in the shelf.
 It is recommended to run this script from a Shelf Tool instead of the Python shell so that the
 actions taken by the script can be undone/redone with ctrl+z.
 
-https://github.com/conlen-b/cb-houdini-tools/blob/main/copy-parms-in-folder-to-other-node/CopyParmsInFolderToOtherNode.py
+https://github.com/conlen-b/cb-houdini-tools/blob/main/copy-parms-to-other-node/CopyParmsToOtherNode.py
 """
 
 __author__ = "Conlen Breheny"
