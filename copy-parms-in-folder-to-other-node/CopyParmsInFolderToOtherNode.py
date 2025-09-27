@@ -3,7 +3,7 @@
 """
 CopyParmsInFolderToOtherNode.py
 A script to copy all parms in source parm folder from source node to the destination node.
-Updated 9/25/2025
+Updated 9/27/2025
 
 To run, go to the Houdini shelf and right click -> New Tool, go to the Script tab, paste the script
 into the editor, scroll down to the bottom (line 103), fill in the correct input parameters, hit
@@ -17,10 +17,11 @@ https://github.com/conlen-b/cb-houdini-tools/blob/main/copy-parms-in-folder-to-o
 
 __author__ = "Conlen Breheny"
 __copyright__ = "Copyright 2025, Conlen Breheny"
-__version__ = "1.1.0" #Major.Minor.Patch
+__version__ = "1.1.1" #Major.Minor.Patch
 
 import hou
 import logging
+from typing import Generator, Tuple
 
 #Errors go to error output, rest go to standard output
 logging.basicConfig()
@@ -31,10 +32,29 @@ logger = logging.getLogger(__name__)
 #On code release, switch from DEBUG to INFO
 logger.setLevel(logging.INFO)
 
-def _ZspcCopyParmsInFolderToOtherNode(src_node_name: str,
-                                        dst_node_name: str,
-                                        src_folder_name: str,
-                                        src_folder_label: str = None) -> None:
+
+def _walk_parm_templates(
+    entries : Tuple[hou.ParmTemplate, ...]
+    #Generator type hint formatting: Generator[yield_type, send_type, return_type]
+) -> Generator[hou.ParmTemplate, None, None]:
+    """
+    Recursively yield all parm templates (including nested inside folders).
+    
+    :param entries: Tuple of hou.ParmTemplate
+    """
+    for template in entries:
+        yield template
+        if isinstance(template, hou.FolderParmTemplate):
+            # Recurse into subfolder contents
+            for child in _walk_parm_templates(template.parmTemplates()):
+                yield child
+
+def _ZspcCopyParmsInFolderToOtherNode(
+    src_node_name: str,
+    dst_node_name: str,
+    src_folder_name: str,
+    src_folder_label: str = None
+) -> None:
     """
     Copies all parms in source parm folder from source node to the destination node.
 
@@ -56,10 +76,12 @@ def _ZspcCopyParmsInFolderToOtherNode(src_node_name: str,
     # Get parameter templates (interface definitions)
     src_ptg = src_node.parmTemplateGroup()
     dst_ptg = dst_node.parmTemplateGroup()
-
+    
+    src_all_parm_templates = list(_walk_parm_templates(src_ptg.entries()))
+    
     # Find the source folder
     src_folder = None
-    for template in src_ptg.entries():
+    for template in src_all_parm_templates:
         if not isinstance(template, hou.FolderParmTemplate):
             continue
         if template.name() != src_folder_name:
@@ -69,6 +91,13 @@ def _ZspcCopyParmsInFolderToOtherNode(src_node_name: str,
 
         src_folder = template
         break
+    
+    if src_folder is None:
+        raise RuntimeError(
+            (
+                "Folder of name {f_name} and label {f_label} not found in source "
+                "node's parameters."
+            ).format(f_name=src_folder_name, f_label=src_folder_label))
 
     dst_folder_name = src_folder.name()
     dst_folder_label = src_folder.label()
@@ -98,13 +127,16 @@ def _ZspcCopyParmsInFolderToOtherNode(src_node_name: str,
     # Apply the modified parameter interface to the destination node
     dst_node.setParmTemplateGroup(dst_ptg)
 
-    logger.info("Successfully copied folder {f_label} from source to destination.".format(f_label=dst_folder_label))
+    logger.info(
+        (
+            "Successfully copied folder {f_label} from source to destination."
+        ).format(f_label=dst_folder_label))
 
 #Input parameters
 src_node_name = "/obj/geo1/rbdbulletsolver1"
 dst_node_name = "/obj/geo1/rbdbulletsolver1/dopnet/forces/CUSTOM_GUIDE_CTRL"
-src_folder_name = "folder_5"
-src_folder_label = "Guide"
+src_folder_name = "folder32"
+src_folder_label = "Guided Neighbors"
 
 """
 Run function
