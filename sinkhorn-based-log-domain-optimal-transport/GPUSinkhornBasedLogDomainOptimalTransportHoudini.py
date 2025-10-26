@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
 
 """
-SinkhornBasedLogDomainOptimalTransportHoudini.py
-An implementation of Optimal Transport that is sinkhorn based and performed in the log domain.
+GPUSinkhornBasedLogDomainOptimalTransportHoudini.py
+A GPU implementation of Optimal Transport using CuPy (GPU drop-in for Numpy) that is sinkhorn based and performed in the log domain.
+Assumes CuPy version 13.x
 Based off of the algorithm outlined in Remark 4.22 "Computational Optimal Transport" (2019) by Gabriel Peyré
 & Marco Cuturi https://arxiv.org/abs/1803.00567
+
+Requires CuPy to be installed in the Houdini environment, can be done with this console command:
+"C:\Program Files\Side Effects Software\Houdini 20.5.684\bin\hython.exe" -m pip install cupy-cuda13x
+^Switch the Houdini version and cupy cuda version as needed
+
+Requires the NVIDIA CUDA Toolkit matching your Cuda version eg. 13
+Houdini's path may need to append:
+PATH = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin;&"
 
 Heavily commented in the form of notes/documentation for myself as I was learning this.
 Updated 10/26/2025
@@ -45,59 +54,59 @@ https://github.com/conlen-b/cb-houdini-tools/blob/main/sinkhorn-based-log-domain
 
 __author__ = "Conlen Breheny"
 __copyright__ = "Copyright 2025, Conlen Breheny"
-__version__ = "1.0.2" #Major.Minor.Patch
+__version__ = "1.0.1" #Major.Minor.Patch
 
-import numpy as np
+import cupy as cpy
 from typing import Optional, Tuple, Dict
 
 
 def _logsumexp(
-    a: np.ndarray,
+    a: cpy.ndarray,
     axis: Optional[int] = None
-) -> np.ndarray:
+) -> cpy.ndarray:
     """
-    Numpy-only implementation of scipy.special import logsumexp.
+    Cupy-only implementation of scipy.special import logsumexp.
 
     Logsumexp takes takes each log value and takes them back to linear space with linear_n = e^n. It then sums all of
     the linear values, and takes the log of that linear sum. This is not the same as summing all of the log values and
     then taking that sum of logs back to linear. (It is a log of a linear sum, not a sum of logs)
 
-    :param a: np.ndarray of values in natural log (log base e) space.
+    :param a: cpy.ndarray of values in natural log (log base e) space.
     :param axis: optional integer specifying the axis along which to sum. If None, sum over all elements.
-    :return: np.ndarray with log of summed exponentials along the specified axis.
+    :return: cpy.ndarray with log of summed exponentials along the specified axis.
     """
 
     """Find the maximum value along the specified axis that is being summed.
     Exponentiating very large/small numbers can over/underflow, so subtracting the max before then adding it back after
     keeps the numbers in a safe range. Full dimensions are kept for the computation"""
-    a_max = np.max(a, axis=axis, keepdims=True)
+    a_max = cpy.max(a, axis=axis, keepdims=True)
     #Subtract the max, linearize, sum the linear, go back to log, add back the max
-    res = a_max + np.log(np.sum(np.exp(a - a_max), axis=axis, keepdims=True))
+    res = a_max + cpy.log(cpy.sum(cpy.exp(a - a_max), axis=axis, keepdims=True))
     """Discard unecessary dimensions after computation, eg. if axis=1 for a (3,4) array, res is initially (3,1);
     squeeze makes it (3,)"""
-    return np.squeeze(res, axis=axis)
+    return cpy.squeeze(res, axis=axis)
 
 
 
 def _sinkhorn_log_domain(
-    src_pts: np.ndarray,
-    tgt_pts: np.ndarray,
-    src_wgts: Optional[np.ndarray] = None,
-    tgt_wgts: Optional[np.ndarray] = None,
+    src_pts: cpy.ndarray,
+    tgt_pts: cpy.ndarray,
+    src_wgts: Optional[cpy.ndarray] = None,
+    tgt_wgts: Optional[cpy.ndarray] = None,
     epsilon: float = 0.05,
     min_iterations: int = 3,
     max_iterations: int = 200,
     tolerance: float = 1e-12,
     verbose: bool = False
-) -> Tuple[np.ndarray, Dict[str, object]]:
+) -> Tuple[cpy.ndarray, Dict[str, object]]:
     """
     Compute the Sinkhorn optimal transport matrix in the log-domain (for numerical stability).
 
-    :param src_pts: np.ndarray of shape (n, d) representing the source point positions.
-    :param tgt_pts: np.ndarray of shape (m, d) representing the target point positions.
-    :param src_wgts: optional np.ndarray of shape (n,) representing source point weights (sum to 1).
+    :param src_pts: cpy.ndarray of shape (n, d) representing the source point positions.
+    :param tgt_pts: cpy.ndarray of shape (m, d) representing the target point positions.
+    :param src_wgts: optional cpy.ndarray of shape (n,) representing source point weights (sum to 1).
         If None, uniform weights are used.
-    :param tgt_wgts: optional np.ndarray of shape (m,) representing target point weights (sum to 1).
+    :param tgt_wgts: optional cpy.ndarray of shape (m,) representing target point weights (sum to 1).
         If None, uniform weights are used.
     :param epsilon: float, entropic regularization parameter (larger = smoother/blurrier matching).
     :param min_iterations: int, minimum number of Sinkhorn iterations before checking for convergence.
@@ -107,7 +116,7 @@ def _sinkhorn_log_domain(
 
     Returns
     -------
-    transport_matrix : np.ndarray, shape (n, m)
+    transport_matrix : cpy.ndarray, shape (n, m)
         The optimal transport plan between source and target points.
     info : dict
         Dictionary with convergence info (iterations, epsilon, converge_type).
@@ -118,14 +127,14 @@ def _sinkhorn_log_domain(
     
     # Assign uniform weights if not provided
     if src_wgts is None:
-        #np.ones initializes a new array filled with 1.0 values, so uniform weight is created here
-        src_wgts = np.ones(num_sources) / num_sources
+        #cpy.ones initializes a new array filled with 1.0 values, so uniform weight is created here
+        src_wgts = cpy.ones(num_sources) / num_sources
     if tgt_wgts is None:
-        tgt_wgts = np.ones(num_targets) / num_targets
+        tgt_wgts = cpy.ones(num_targets) / num_targets
 
     # Ensure float64 precision
-    src_wgts = src_wgts.astype(np.float64)
-    tgt_wgts = tgt_wgts.astype(np.float64)
+    src_wgts = src_wgts.astype(cpy.float64)
+    tgt_wgts = tgt_wgts.astype(cpy.float64)
     # Make array sum to 1.0 (normalize)
     src_wgts /= src_wgts.sum()
     tgt_wgts /= tgt_wgts.sum()
@@ -133,10 +142,10 @@ def _sinkhorn_log_domain(
     """Compute cost matrix (squared Euclidean distance)
     cost[i, j] = ||src_pts[i] - tgt_pts[j]||²
 
-    np.sum axis arg can sum either all the rows or all of the columns, axis=1 collapses columns and therefore sums
+    cpy.sum axis arg can sum either all the rows or all of the columns, axis=1 collapses columns and therefore sums
     each row, returning an array of the sum of each row"""
-    source_squared = np.sum(src_pts**2, axis=1)[:, None] 
-    target_squared = np.sum(tgt_pts**2, axis=1)[None, :]
+    source_squared = cpy.sum(src_pts**2, axis=1)[:, None] 
+    target_squared = cpy.sum(tgt_pts**2, axis=1)[None, :]
     """
     [None, :] and [:, None] reshape the 1D array into a 2D matrix. The source points are made into a vertical matrix
     (n rows, 1 column), and the target points are made into a horizontal matrix (1 row, n columns). The None value is
@@ -152,10 +161,10 @@ def _sinkhorn_log_domain(
      [s2+t1, s2+t2],
      [s3+t1, s3+t2]]
 
-    np.matmul is matrix multiplication. .T switches the rows and columns of a matrix, flipping it over the diagonal.
+    cpy.matmul is matrix multiplication. .T switches the rows and columns of a matrix, flipping it over the diagonal.
     The addition requres the flipped rows/columns from the alternating [:, None] and [None, :], but the multiplication
     requires the transpose."""
-    cost_matrix = source_squared + target_squared - 2.0 * np.matmul(src_pts,tgt_pts.T) 
+    cost_matrix = source_squared + target_squared - 2.0 * cpy.matmul(src_pts,tgt_pts.T) 
     """The cost matrix dimensions are row_count: num_src_pts, column_count: num_tgt_pts. Each entry corresponds to the
     distance between the source and target points described by the index eg. [src_pt, tgt_pt]"""
 
@@ -164,19 +173,19 @@ def _sinkhorn_log_domain(
     log_kernel = -cost_matrix / float(epsilon)
 
     # Initialize scaling factors (log_u, log_v)
-    log_u = np.zeros(num_sources, dtype=np.float64)
-    log_v = np.zeros(num_targets, dtype=np.float64)
+    log_u = cpy.zeros(num_sources, dtype=cpy.float64)
+    log_v = cpy.zeros(num_targets, dtype=cpy.float64)
 
     """Convert weights to log domain.
     1e-256 is added to prevent taking the logarithm of zero which is negative infinity or an error. 1e-256 is chosen to
     be safely above underflow for double precision, but small enough not to affect the computation significantly."""
 
-    log_src_wgts = np.log(src_wgts + 1e-256)
-    log_tgt_wgts = np.log(tgt_wgts + 1e-256)
+    log_src_wgts = cpy.log(src_wgts + 1e-256)
+    log_tgt_wgts = cpy.log(tgt_wgts + 1e-256)
 
     """Initialize error as infinity, because all subsequent iterations will have lower error than infinity so it won't
     terminate. The error checks for convergence, or when the error is less than the tolerance."""
-    previous_error = np.inf
+    previous_error = cpy.inf
     converge_type = ""
 
     """
@@ -228,7 +237,7 @@ def _sinkhorn_log_domain(
             log_col_sums = _logsumexp(log_u[:, None] + log_kernel + log_v[None, :], axis=0)
             """Compute how close the columns (targets) of the scaled kernel are to the target weights.
             Currently, target weights (columns) is all that is checked for convergence, not source weights."""
-            marginal_error = np.max(np.abs(np.exp(log_col_sums) - tgt_wgts))
+            marginal_error = cpy.max(cpy.abs(cpy.exp(log_col_sums) - tgt_wgts))
 
             if verbose:
                 #:4d prints an integer with minimum 4 digits, so space padding is added to <4 digit integers
@@ -252,7 +261,7 @@ def _sinkhorn_log_domain(
 
     #Compute final transport matrix after convergence: P = exp(log_u + logK + log_v)
     log_transport = log_u[:, None] + log_kernel + log_v[None, :] #Add computed scaling values to kernel
-    transport_matrix = np.exp(log_transport) #Convert from natural log to linear
+    transport_matrix = cpy.exp(log_transport) #Convert from natural log to linear
 
     """The weights were normalized to sum to 1 before Sinkhorn. Due to floating point precision, it may now sum slightly
     less or more than 1. This normalization makes it sum exactly to 1 based on the source weights so that each source
@@ -288,9 +297,9 @@ def _zspc_sbld_optimal_transport():
     tolerance_parm_value = node.parm("tolerance").eval()
 
     # get source points A (e.g. previous-frame webbing points for WDAS Druun setup)
-    src_pts = np.array([p.position() for p in geo.points()], dtype=np.float64)
+    src_pts = cpy.array([p.position() for p in geo.points()], dtype=cpy.float64)
 
-    tgt_pts = np.array([p.position() for p in geo_1.points()], dtype=np.float64)
+    tgt_pts = cpy.array([p.position() for p in geo_1.points()], dtype=cpy.float64)
 
     """optional weights - None results in uniform weights, otherwise pass in an array of weights
     (eg. read from an attribute)"""
@@ -311,10 +320,11 @@ def _zspc_sbld_optimal_transport():
     positions.
     The source point positions are the weighted average of the influencing target points based on their influence/mass
     (a barycenter)"""
-    transported_src_pts = np.matmul(transport_matrix, tgt_pts)
+    transported_src_pts = cpy.matmul(transport_matrix, tgt_pts)
+    transported_src_pts_cpu = cpy.asnumpy(transported_src_pts)
 
     #Construct flat array of floats for Houdini as detail vector arrays not supported in Houdini 20.5.
-    transported_src_pts_flat = transported_src_pts.flatten().tolist()
+    transported_src_pts_flat = transported_src_pts_cpu.flatten().tolist()
 
     #Write to detail array attribute instead of point attribute to avoid for each loop API calls -- optimization.
     if geo.findPointAttrib("ot_flat_pos_array") is None:
