@@ -26,6 +26,8 @@ Outputs the attribute ot_pos on the source points, which is the position of each
 This gets quite slow, try to limit yourself to a few thousand points if computed each step in a solver, and less than a
 hundred thousand if computed once, otherwise it gets quite slow.
 You could potentially interpolate the output ot_pos from a sparser point cloud to a denser point cloud
+
+https://github.com/conlen-b/cb-houdini-tools/blob/main/sinkhorn-based-log-domain-optimal-transport/SinkhornBasedLogDomainOptimalTransportHoudini.py
 """
 
 __author__ = "Conlen Breheny"
