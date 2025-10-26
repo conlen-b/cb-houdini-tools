@@ -12,7 +12,7 @@ Place in a python SOP, and create the required parameters on the SOP:
 "max_iterations" : int (Hard min: 1; Soft Max: 500; Default: 200)
 "tolerance" : float (Hard min: 1e-12; Soft Max: 0.1; Default: 1e-8)
 
-Note: The main code block below all definitions requires __name__ == "builtins", which is __name__ for the Python
+Note: The main code block below all definitions requires `__name__` == "builtins", which is `__name__` for the Python
 SOP in Houdini 20.5.
 
 Plug in the source point cloud in the Python SOP's first input, and the target point cloud in the Python SOP's second
