@@ -28,9 +28,9 @@ logging.basicConfig()
 #Logger for this module
 logger = logging.getLogger(__name__)
 #Log all levels down to the debug level
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 #On code release, switch from DEBUG to INFO
-#logger.setLevel(logging.INFO)
+logger.setLevel(logging.INFO)
 
 
 def _walk_parm_templates(
