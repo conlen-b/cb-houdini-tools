@@ -1,4 +1,4 @@
-# **[sinkhorn-based-log-domain-optimal-transport](./SinkhornBasedLogDomainOptimalTransportHoudini.py)**
+# **[Sinkhorn-Based Log Domain Optimal Transport](./SinkhornBasedLogDomainOptimalTransportHoudini.py)**
 An implementation of Optimal Transport that is sinkhorn based and performed in the log domain.
 Based off of the algorithm outlined in Remark 4.22 "Computational Optimal Transport" (2019) by Gabriel Peyré & Marco Cuturi https://arxiv.org/abs/1803.00567
 
