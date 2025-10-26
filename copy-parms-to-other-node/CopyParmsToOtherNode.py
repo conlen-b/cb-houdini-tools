@@ -3,7 +3,7 @@
 """
 CopyParmsToOtherNode.py
 A script to copy a parm or all parms in source parm folder from source node to the destination node.
-Updated 9/27/2025
+Updated 10/26/2025
 
 To run, go to the Houdini shelf and right click -> New Tool, go to the Script tab, paste the script
 into the editor, scroll down to the bottom (line 147), fill in the correct input parameters, hit
@@ -17,7 +17,7 @@ https://github.com/conlen-b/cb-houdini-tools/blob/main/copy-parms-to-other-node/
 
 __author__ = "Conlen Breheny"
 __copyright__ = "Copyright 2025, Conlen Breheny"
-__version__ = "1.2.0" #Major.Minor.Patch
+__version__ = "1.2.2" #Major.Minor.Patch
 
 import hou
 import logging
@@ -49,7 +49,7 @@ def _walk_parm_templates(
             for child in _walk_parm_templates(template.parmTemplates()):
                 yield child
 
-def _ZspcCopyParmsToOtherNode(
+def _zspc_copy_parms_to_other_node(
     src_node_name: str,
     dst_node_name: str,
     src_name: str,
@@ -155,4 +155,4 @@ Run function
 (not using __name__ __main__ check because it is ran from a shelf tool button, where
 __name__ != __main__)
 """
-_ZspcCopyParmsToOtherNode(src_node_name, dst_node_name, src_name, src_label)
+_zspc_copy_parms_to_other_node(src_node_name, dst_node_name, src_name, src_label)
