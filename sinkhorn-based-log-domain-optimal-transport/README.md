@@ -37,16 +37,16 @@ You could potentially interpolate the output ot_pos from a sparser point cloud t
 
 # **[GPU Sinkhorn-Based Log Domain Optimal Transport](./GPUSinkhornBasedLogDomainOptimalTransportHoudini.py)**
 GPUSinkhornBasedLogDomainOptimalTransportHoudini.py
-A GPU implementation of Optimal Transport using CuPy (GPU drop-in for Numpy) that is sinkhorn based and performed in the log domain.
-Assumes CuPy version 13.x
+A GPU implementation of Optimal Transport using CuPy (GPU drop-in for Numpy) that is sinkhorn based and performed in the log domain.  
 Based off of the algorithm outlined in Remark 4.22 "Computational Optimal Transport" (2019) by Gabriel Peyré & Marco Cuturi https://arxiv.org/abs/1803.00567
 
-Requires CuPy to be installed in the Houdini environment, can be done with this console command:
-"C:\Program Files\Side Effects Software\Houdini 20.5.684\bin\hython.exe" -m pip install cupy-cuda13x
+Assumes CuPy version 13.x  
+Requires CuPy to be installed in the Houdini environment, can be done with this console command:  
+"C:\Program Files\Side Effects Software\Houdini 20.5.684\bin\hython.exe" -m pip install cupy-cuda13x  
 ^Switch the Houdini version and cupy cuda version as needed
 
-Requires the NVIDIA CUDA Toolkit matching your Cuda version eg. 13
-Houdini's path may need to append:
+Requires the NVIDIA CUDA Toolkit matching your Cuda version eg. 13  
+Houdini's path may need to append:  
 PATH = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin;&"
 
 Heavily commented in the form of notes/documentation for myself as I was learning this.

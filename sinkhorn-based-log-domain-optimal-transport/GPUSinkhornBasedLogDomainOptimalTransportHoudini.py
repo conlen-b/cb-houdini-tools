@@ -3,10 +3,10 @@
 """
 GPUSinkhornBasedLogDomainOptimalTransportHoudini.py
 A GPU implementation of Optimal Transport using CuPy (GPU drop-in for Numpy) that is sinkhorn based and performed in the log domain.
-Assumes CuPy version 13.x
 Based off of the algorithm outlined in Remark 4.22 "Computational Optimal Transport" (2019) by Gabriel Peyré
 & Marco Cuturi https://arxiv.org/abs/1803.00567
 
+Assumes CuPy version 13.x
 Requires CuPy to be installed in the Houdini environment, can be done with this console command:
 "C:\Program Files\Side Effects Software\Houdini 20.5.684\bin\hython.exe" -m pip install cupy-cuda13x
 ^Switch the Houdini version and cupy cuda version as needed
