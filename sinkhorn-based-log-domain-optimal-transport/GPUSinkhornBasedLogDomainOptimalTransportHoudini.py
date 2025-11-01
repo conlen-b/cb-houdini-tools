@@ -3,7 +3,7 @@
 """
 GPUSinkhornBasedLogDomainOptimalTransportHoudini.py
 A GPU implementation of Optimal Transport using CuPy (GPU drop-in for Numpy) that is sinkhorn based and performed in the log domain.
-Based off of the algorithm outlined in Remark 4.22 "Computational Optimal Transport" (2019) by Gabriel Peyré
+Based off of the algorithm outlined in Remark 4.23 "Computational Optimal Transport" (2019) by Gabriel Peyré
 & Marco Cuturi https://arxiv.org/abs/1803.00567
 
 Assumes CuPy version 13.x
