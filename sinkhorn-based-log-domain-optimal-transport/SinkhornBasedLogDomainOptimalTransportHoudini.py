@@ -7,13 +7,14 @@ Based off of the algorithm outlined in Remark 4.23 "Computational Optimal Transp
 & Marco Cuturi https://arxiv.org/abs/1803.00567
 
 Heavily commented in the form of notes/documentation for myself as I was learning this.
-Updated 10/26/2025
+Updated 11/2/2025
 
 Place in a python SOP, and create the required parameters on the SOP:
 "epsilon" : float (Hard min: 1e-10; Soft Max: 0.2; Default: 0.03)
 "min_iterations" : int (Hard min: 0; Soft Max: 30; Default: 3)
 "max_iterations" : int (Hard min: 1; Soft Max: 500; Default: 200)
 "tolerance" : float (Hard min: 1e-12; Soft Max: 0.1; Default: 1e-8)
+"output_debug_attrs" : toggle (Default: False)
 
 Note: The main code block below all definitions requires __name__ == "builtins", which is __name__ for the Python
 SOP in Houdini 20.5.
@@ -21,7 +22,8 @@ SOP in Houdini 20.5.
 Plug in the source point cloud in the Python SOP's first input, and the target point cloud in the Python SOP's second
 input.
 
-Outputs the attribute ot_flat_pos_array on the source points, which is a flattened list of the positions of each point after optimal transport.
+Outputs the attribute ot_flat_pos_array on the source points, which is a flattened list of the positions of each point
+after optimal transport.
 A point wrangle after the Python SOP can convert this to a per-point vector attribute with the following code:
     float ot_flat_pos_array[];
     ot_flat_pos_array = detail(0, "ot_flat_pos_array");
@@ -37,18 +39,19 @@ A point wrangle after the Python SOP can convert this to a per-point vector attr
     v@ot_pos = ot_pos;
 
 This gets quite slow, try to limit yourself to a few thousand points if computed each step in a solver, and less than a
-hundred thousand if computed once, otherwise it gets quite slow.
-You could potentially interpolate the output ot_pos from a sparser point cloud to a denser point cloud
+hundred thousand if computed once, otherwise it gets quite slow. Be wary of memory as well for large point clouds.
+You could potentially interpolate the output ot_pos from a sparser point cloud to a denser point cloud.
 
 https://github.com/conlen-b/cb-houdini-tools/blob/main/sinkhorn-based-log-domain-optimal-transport/SinkhornBasedLogDomainOptimalTransportHoudini.py
 """
 
 __author__ = "Conlen Breheny"
 __copyright__ = "Copyright 2025, Conlen Breheny"
-__version__ = "1.0.2" #Major.Minor.Patch
+__version__ = "1.0.3" #Major.Minor.Patch
 
 import numpy as np
 from typing import Optional, Tuple, Dict
+import gc #Python Garbage Collector to free memory explicitly
 
 
 def _logsumexp(
@@ -79,7 +82,7 @@ def _logsumexp(
 
 
 
-def _sinkhorn_log_domain(
+def _sinkhorn_log_domain_ot(
     src_pts: np.ndarray,
     tgt_pts: np.ndarray,
     src_wgts: Optional[np.ndarray] = None,
@@ -107,8 +110,9 @@ def _sinkhorn_log_domain(
 
     Returns
     -------
-    transport_matrix : np.ndarray, shape (n, m)
-        The optimal transport plan between source and target points.
+    transported_src_pts : np.ndarray, shape (n, d)
+        The transport plan applied to the source points. The resulting source point positions are the weighted average
+        of the influencing target points based on their influence/mass (a barycenter).
     info : dict
         Dictionary with convergence info (iterations, epsilon, converge_type).
     """
@@ -123,9 +127,9 @@ def _sinkhorn_log_domain(
     if tgt_wgts is None:
         tgt_wgts = np.ones(num_targets) / num_targets
 
-    # Ensure float64 precision
-    src_wgts = src_wgts.astype(np.float64)
-    tgt_wgts = tgt_wgts.astype(np.float64)
+    # Ensure float32 precision
+    src_wgts = src_wgts.astype(np.float32)
+    tgt_wgts = tgt_wgts.astype(np.float32)
     # Make array sum to 1.0 (normalize)
     src_wgts /= src_wgts.sum()
     tgt_wgts /= tgt_wgts.sum()
@@ -155,7 +159,13 @@ def _sinkhorn_log_domain(
     np.matmul is matrix multiplication. .T switches the rows and columns of a matrix, flipping it over the diagonal.
     The addition requres the flipped rows/columns from the alternating [:, None] and [None, :], but the multiplication
     requires the transpose."""
-    cost_matrix = source_squared + target_squared - 2.0 * np.matmul(src_pts,tgt_pts.T) 
+    cost_matrix = (source_squared + target_squared - 2.0 * np.matmul(src_pts,tgt_pts.T)).astype(np.float32)
+    
+    #Free up memory by allowing the Python "garbage collector" to see these
+    del source_squared, target_squared
+    #Explicitly free memory
+    gc.collect()
+
     """The cost matrix dimensions are row_count: num_src_pts, column_count: num_tgt_pts. Each entry corresponds to the
     distance between the source and target points described by the index eg. [src_pt, tgt_pt]"""
 
@@ -164,8 +174,8 @@ def _sinkhorn_log_domain(
     log_kernel = -cost_matrix / float(epsilon)
 
     # Initialize scaling factors (log_u, log_v)
-    log_u = np.zeros(num_sources, dtype=np.float64)
-    log_v = np.zeros(num_targets, dtype=np.float64)
+    log_u = np.zeros(num_sources, dtype=np.float32)
+    log_v = np.zeros(num_targets, dtype=np.float32)
 
     """Convert weights to log domain.
     1e-256 is added to prevent taking the logarithm of zero which is negative infinity or an error. 1e-256 is chosen to
@@ -250,6 +260,12 @@ def _sinkhorn_log_domain(
             #Save out the previous error for the stagnation check
             previous_error = marginal_error
 
+    if converge_type == "":
+        if marginal_error < tolerance:
+            converge_type = "Error < tolerance"
+        else:
+            converge_type = "Max iterations reached"
+
     #Compute final transport matrix after convergence: P = exp(log_u + logK + log_v)
     log_transport = log_u[:, None] + log_kernel + log_v[None, :] #Add computed scaling values to kernel
     transport_matrix = np.exp(log_transport) #Convert from natural log to linear
@@ -259,13 +275,19 @@ def _sinkhorn_log_domain(
     distributes 100% of its mass."""
     transport_matrix /= (transport_matrix.sum(axis=1)[:, None] + 1e-300)
 
+    """Applying the transport matrix to the target points results in the optimally transported/mapped source point
+    positions.
+    The source point positions are the weighted average of the influencing target points based on their influence/mass
+    (a barycenter)"""
+    transported_src_pts = np.matmul(transport_matrix, tgt_pts)
+
     info = {
         "iterations": iteration + 1,
         "epsilon": epsilon,
         "converge_type": converge_type
     }
 
-    return transport_matrix, info #Return the transport plan and metadata.
+    return transported_src_pts, info #Return the transported source points and metadata.
 
 
 
@@ -286,18 +308,19 @@ def _zspc_sbld_optimal_transport():
     min_iterations_parm_value = node.parm("min_iterations").eval()
     max_iterations_parm_value = node.parm("max_iterations").eval()
     tolerance_parm_value = node.parm("tolerance").eval()
+    output_debug_attrs = node.parm("output_debug_attrs").eval()
 
     # get source points A (e.g. previous-frame webbing points for WDAS Druun setup)
-    src_pts = np.array([p.position() for p in geo.points()], dtype=np.float64)
+    src_pts = np.array([p.position() for p in geo.points()], dtype=np.float32)
 
-    tgt_pts = np.array([p.position() for p in geo_1.points()], dtype=np.float64)
+    tgt_pts = np.array([p.position() for p in geo_1.points()], dtype=np.float32)
 
     """optional weights - None results in uniform weights, otherwise pass in an array of weights
     (eg. read from an attribute)"""
     src_wgts = None
     tgt_wgts = None
 
-    transport_matrix, info = _sinkhorn_log_domain(src_pts,
+    transported_src_pts, info = _sinkhorn_log_domain_ot(src_pts,
                                                     tgt_pts,
                                                     src_wgts=src_wgts,
                                                     tgt_wgts=tgt_wgts,
@@ -307,20 +330,33 @@ def _zspc_sbld_optimal_transport():
                                                     tolerance=tolerance_parm_value,
                                                     verbose=False)
 
-    """Applying the transport matrix to the target points results in the optimally transported/mapped source point
-    positions.
-    The source point positions are the weighted average of the influencing target points based on their influence/mass
-    (a barycenter)"""
-    transported_src_pts = np.matmul(transport_matrix, tgt_pts)
+    #Free up memory by allowing the Python "garbage collector" to see these
+    del src_pts, tgt_pts
+    #Explicitly free memory
+    gc.collect()
 
-    #Construct flat array of floats for Houdini as detail vector arrays not supported in Houdini 20.5.
+    #Construct flat array of floats for Houdini as Python detail vector arrays not supported in Houdini 20.5.
     transported_src_pts_flat = transported_src_pts.flatten().tolist()
 
-    #Write to detail array attribute instead of point attribute to avoid for each loop API calls -- optimization.
-    if geo.findPointAttrib("ot_flat_pos_array") is None:
-        geo.addArrayAttrib(hou.attribType.Global, "ot_flat_pos_array", hou.attribData.Float, len(src_pts) * 3)
+    #Free up memory by allowing the Python "garbage collector" to see these
+    del transported_src_pts
+    #Explicitly free memory
+    gc.collect()
 
+    #Write to detail array attribute instead of point attribute to avoid for each loop API calls -- optimization.
+    if geo.findGlobalAttrib("ot_flat_pos_array") is None:
+        geo.addArrayAttrib(hou.attribType.Global, "ot_flat_pos_array", hou.attribData.Float)
     geo.setGlobalAttribValue("ot_flat_pos_array", transported_src_pts_flat)
+
+    #Output iterations and converge type if output debug attrs is true
+    if output_debug_attrs:
+        if geo.findGlobalAttrib("_ot_iterations") is None:
+            geo.addAttrib(hou.attribType.Global, "_ot_iterations", int(0), create_local_variable=False)
+        geo.setGlobalAttribValue("_ot_iterations", info["iterations"])
+
+        if geo.findGlobalAttrib("_ot_converge_type") is None:
+            geo.addAttrib(hou.attribType.Global, "_ot_converge_type", str(""), create_local_variable=False)
+        geo.setGlobalAttribValue("_ot_converge_type", str(info["converge_type"]))
 
 if (__name__ == "builtins"): #Houdini Python SOP __name__
     _zspc_sbld_optimal_transport()
