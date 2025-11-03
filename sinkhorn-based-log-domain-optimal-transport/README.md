@@ -1,11 +1,11 @@
-# **[CB Optimal Transport SOP HDA](./sop_cb_optimal_transport.1.0.hdanc)**
+# **[Optimal Transport SOP HDA](./sop_cb_optimal_transport.1.0.hdanc)**
 [`sop_cb_optimal_transport.1.0.hdanc`](./sop_cb_optimal_transport.1.0.hdanc)
 
 A Houdini Digital Asset (HDA) for the SOP level that provides a convenient wrapper over my Optimal Transport Python scripts below.
 
 ## How To Use:
 Import into Houdini with File > Import > Houdini Digital Asset.  
-In a SOP context network, search for "CB Optimal Transport".  
+In a SOP context network, search for "Optimal Transport".  
 Connect the source points to transport in the first input, and the target points to transport to in the second input.  
 
 Select the compute type (GPU is only available if CuPy and NVIDIA CUDA Toolkit are installed; see the [GPU script description](#gpu-sinkhorn-based-log-domain-optimal-transport) for more info).
