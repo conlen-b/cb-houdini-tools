@@ -1,5 +1,5 @@
 # **[Optimal Transport Example Hip](./OptimalTransport_SinkhornBasedLogDomain_v010.hipnc)**
-[`OptimalTransport_SinkhornBasedLogDomain_v010.hipnc`](./OptimalTransport_SinkhornBasedLogDomain_v010.hipncc)
+[`OptimalTransport_SinkhornBasedLogDomain_v010.hipnc`](./OptimalTransport_SinkhornBasedLogDomain_v010.hipnc)
 
 A Houdini Digital Asset (HDA) for the SOP level that provides a convenient wrapper over my Optimal Transport Python scripts below.
 
