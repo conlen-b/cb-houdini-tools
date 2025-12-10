@@ -72,7 +72,7 @@ Based off of the algorithm outlined in Remark 4.23 "Computational Optimal Transp
 
 Assumes Cuda + CuPy version 13.x:  
 Requires CuPy to be installed in the Houdini environment, can be done with this console command:  
-"C:\Program Files\Side Effects Software\Houdini 20.5.684\bin\hython.exe" -m pip install cupy-cuda13x  
+"[PROGRAM_FILES_PATH]\Side Effects Software\Houdini [VERSION]\bin\hython.exe" -m pip install cupy-cuda13x  
 ^Switch the Houdini version and cupy cuda version as needed
 
 Requires the NVIDIA CUDA Toolkit matching your Cuda version eg. 13  
