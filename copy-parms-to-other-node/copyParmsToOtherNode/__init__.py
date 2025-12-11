@@ -22,6 +22,6 @@ logging.basicConfig(format=f"%(levelname)s: [Copy Parms to Other Node] %(message
 #Logger for this module
 logger = logging.getLogger("copyParmsToOtherNode")
 #Log all levels down to the debug level
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 #On code release, switch from DEBUG to INFO
-#logger.setLevel(logging.INFO)
+logger.setLevel(logging.INFO)
