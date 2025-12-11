@@ -27,4 +27,7 @@ A script to copy a parm or all parms in source parm folder from source node to t
 4. Click **Accept** to save the new button on the Shelf
 
 ## How To Use:
-IN PROGRESS
+1. Click on your new shelf button to open the UI.
+2. Type a node name, drag a node, or use the node browser to enter the source node to copy parameters from.
+3. Enter the name (required) of the parameter or parameter folder to copy. Optionally, enter the label as well.
+4. Type a node name, drag a node, or use the node browser to enter the source node to copy parameters to.
