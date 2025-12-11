@@ -90,7 +90,7 @@ def _copy_parms_to_other_node(
         logger.warning("Existing parameter/folder has been replaced with copied parameter/folder.")
 
 
-    if isinstance(template, hou.FolderParmTemplate):
+    if isinstance(src_parm, hou.FolderParmTemplate):
         # Copy the folder and all its child parameters
         new_folder = hou.FolderParmTemplate(dst_name,
                                             dst_label,
