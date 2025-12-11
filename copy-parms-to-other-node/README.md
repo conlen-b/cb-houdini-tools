@@ -1,4 +1,4 @@
-# **[Copy Parms to Other Node](./CopyParmsToOtherNode.py)**
+# **Copy Parms to Other Node**
 A script to copy a parm or all parms in source parm folder from source node to the destination node.
 
 ## Installation
