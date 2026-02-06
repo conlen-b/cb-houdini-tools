@@ -1,6 +1,8 @@
 # **Copy Parms to Other Node**
 A script to copy a parm or all parms in source parm folder from source node to the destination node.
 
+![UI Window](./docs/ui-window.jpg)
+
 ## Installation
 1. Download the folder `copy-parms-to-other-node`.
 2. Move the files to Houdini's `packages` folder:
