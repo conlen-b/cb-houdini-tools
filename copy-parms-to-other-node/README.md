@@ -9,6 +9,15 @@ A script to copy a parm or all parms in source parm folder from source node to t
    - Copy the `copy-parms-to-other-node` folder into Houdini's `packages` directory
    - Inside the `copy-parms-to-other-node` folder, copy the `copy-parms-to-other-node.json` file and place it directly into Houdini's `packages` directory
         - On Windows `C:\Users\[USERNAME]\Documents\Houdini[VERSION]\packages`
+
+    **Example Folder Structure:**  
+    ```text
+    ├── houdini21.0
+        ├── packages/
+            ├── copy-parms-to-other-node.json
+            └── /copy-parms-to-other-node
+                └── (package files incl. copyParmsToOtherNode folder)
+    ```
 3. Install QtPy:
    - Open Command Prompt
    - Run the following command (edit the `[PROGRAM_FILES_PATH]` and `[VERSION]` to the path to your program files and the correct Houdini version respectively):  
