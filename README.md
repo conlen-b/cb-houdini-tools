@@ -1,5 +1,9 @@
 # cb-houdini-tools
 A collection of tools created for SideFX Houdini.
+
+Please feel free to tip if any of these tools help your workflow and you'd like to support me!  
+https://www.paypal.me/conlenb
+
 ## Tools
 - **[Copy Parms To Other Node:](/copy-parms-to-other-node/)** A Python script to copy a parm or all parms in source parm folder from source node to the destination node.
 - **[Optimal Transport SOP HDA:](/sinkhorn-based-log-domain-optimal-transport/sop_cb_optimal_transport.1.0.hdanc)** A Houdini Digital Asset (HDA) for the SOP level that provides a convenient wrapper over my Optimal Transport Python scripts.
