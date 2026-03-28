@@ -1,4 +1,5 @@
-# **POP Interaction Forces HDA**
+# **[POP Interaction Forces HDA](./dop_cb_pop_interaction_forces.1.0.hdanc)**
+[`dop_cb_pop_interaction_forces.1.0.hdanc`](./dop_cb_pop_interaction_forces.1.0.hdanc)  
 An HDA implementation of DreamWorks Animation's paper ["Shaping Particle Simulations with Interaction Forces"](https://dl.acm.org/doi/10.1145/2614106.2614121) (Can Yuksel et al.).
 
 This tool enables complex and art-directable particle motion and shaping derived from the existing intrinsic qualities of the particle field.
