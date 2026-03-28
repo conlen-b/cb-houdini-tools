@@ -1,5 +1,7 @@
 # **POP Interaction Forces**
-An HDA implementation of DreamWorks' Shaping Particle Simulations with Interaction Forces (Can Yuksel et al.).
+An HDA implementation of DreamWorks Animation's paper "Shaping Particle Simulations with Interaction Forces" (Can Yuksel et al.).
+
+This tool enables complex and art-directable particle motion and shaping derived from the existing intrinsic qualities of the particle field.
 
 https://github.com/user-attachments/assets/a5bbffb9-a720-41a4-aec8-65c09296b3a3
 
