@@ -50,8 +50,7 @@ The final force, "Around Axes", moves the particles so that they orbit around th
 <img src="./docs/explainer-17.jpg" alt="Explainer 17" height="180" />
 
 ### Parameters
-<img src="./docs/ui.png" alt="UI Window" height="400" />
-<br/><br/>
+<img src="./docs/ui.png" alt="UI Window" height="600" />
 
 >**Group**: The point group to apply the forces to.
 >
