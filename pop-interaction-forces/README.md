@@ -21,7 +21,7 @@ First, each point in the point cloud looks at all of its neighbors within a give
 Next, the average/mean of all of the neighbors is marked as the "LDNP center"/center of mass.  
 <img src="./docs/explainer-04.jpg" alt="Explainer 04" height="200" />
 
-Then, the local axes of the cluster is calculated so that the X/U axis is aligned down the longest part of the cluster, the Y/V axis is aligned to the second longest, and the Z/W axis is aligned to the shortest part of the cluster.  
+Then, the local axes of the cluster are calculated so that the X/U axis is aligned down the longest part of the cluster, the Y/V axis is aligned to the second longest, and the Z/W axis is aligned to the shortest part of the cluster.  
 <img src="./docs/explainer-05.jpg" alt="Explainer 05" height="200" />
 
 After that, the local axes are "stabilized" to prevent flipping between frames. The X axis is stabilized so that it points more towards the velocity vector of the point than it does away from it, the Y axis is stabilized to a user defined "Eigen Y Target" vector, and the Z axis is reconstructed from those.  
