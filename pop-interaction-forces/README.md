@@ -4,7 +4,7 @@ An HDA implementation of DreamWorks Animation's paper ["Shaping Particle Simulat
 
 This tool enables detailed and art-directable particle motion and shaping derived from the existing intrinsic qualities of the particle field.
 
-https://github.com/user-attachments/assets/a5bbffb9-a720-41a4-aec8-65c09296b3a3
+https://github.com/user-attachments/assets/11881cd3-04a3-4ae3-968b-2d65fe4111a4
 
 ## How To Use:
 Example .hip file here:  
