@@ -1,8 +1,8 @@
 # **[POP Interaction Forces HDA](./dop_cb_pop_interaction_forces.1.0.hdanc)**
 [`dop_cb_pop_interaction_forces.1.0.hdanc`](./dop_cb_pop_interaction_forces.1.0.hdanc)  
-An HDA implementation of DreamWorks Animation's paper ["Shaping Particle Simulations with Interaction Forces"](https://dl.acm.org/doi/10.1145/2614106.2614121) (Can Yuksel et al.).
+An HDA implementation of DreamWorks Animation's paper ["Shaping Particle Simulations with Interaction Forces"](https://dl.acm.org/doi/10.1145/2614106.2614121) (Can Yuksel et al.). I referenced Juraj Tomori's (https://github.com/jtomori/) fantastic implementation of the paper as I was learning the theory, but I started from scratch and took a different approach on some of the core mechanics such as computing the LDNP centers and eigenvectors, and added some features to align with the design and UI of other POP nodes.
 
-This tool enables complex and art-directable particle motion and shaping derived from the existing intrinsic qualities of the particle field.
+This tool enables detailed and art-directable particle motion and shaping derived from the existing intrinsic qualities of the particle field.
 
 https://github.com/user-attachments/assets/a5bbffb9-a720-41a4-aec8-65c09296b3a3
 
