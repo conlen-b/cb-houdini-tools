@@ -53,21 +53,43 @@ The final force, "Around Axes", moves the particles so that they orbit around th
 <img src="./docs/ui.png" alt="UI Window" height="400" />
 <br/><br/>
 
-> **Group:** The point group to apply the forces to.
+>**Group**: The point group to apply the forces to.
 >
-> **Solve Objects on Creation Frame:** Whether the internal SOP solver DOP should solve objects on creation frame.
+>**Solve Objects on Creation Frame**: Whether the internal SOP solver DOP should solve objects on creation frame.
 >
-> **Radius:** The radius that each particle should use to construct its local cluster.
+>**Radius**: The radius that each particle should use to construct its local cluster.
 >
->**Global Scale:** A global multipler on the force applied.
+>**Global Scale**: A global multipler on the force applied.
 >
->**Treat As Wind:** Instead of adding force, the targetv and airresist attributes are used as a "wind speed" to be matched by the particle. This causes the particle to be dragged to the goal speed, reducing overshoot.
+>**Treat As Wind**: Instead of adding force, the targetv and airresist attributes are used as a "wind speed" to be matched by the particle. This causes the particle to be dragged to the goal speed, reducing overshoot.
 >
->**Air Resistance:** How much particles are to be influenced by this wind field.
+>**Air Resistance**: How much particles are to be influenced by this wind field.
 >
->**Internal Reduction Percent:** As an optimization, what percent of the particles are ignored when calculating the local axes internally.
+>**Internal Reduction Percent**: As an optimization, what percent of the particles are ignored when calculating the local axes internally.
 
 >#### Interaction Forces
->**Eigen Y Target**:
+>**Eigen Y Target**: The local axes used to apply forces are "stabilized" by reference vectors to prevent flipping between frames. The X axis is stabilized so that it points more towards the velocity vector of the point than it does away from it, the Y axis is stabilized to this user defined "Eigen Y Target" vector.
+>
+>**Along Axes**: Apply force that pushes/pulls particles in the direction (or the opposite direction) of each local axis.
+>
+>**To Axes**: Apply force that moves particles towards (or away from) the nearest point on each local axis from the LDNP center.
+>
+>**Around Axes**: Apply force that moves the particles so that they orbit around each local axis.
+>
+>**Pre-Clamp "To" Forces**: If you preclamp "To" Forces, the To Center and To Axes forces when positive won't go further than the center/axes they are pointing to, and when negative won't go further away than the radius. This clamp is applied before the global multiplier.
+>
+>**Strength Along Distance**: Scale the force based on the distance of the point to its LDNP center. The upper limit of the ramp is linked to the "Radius" parameter.
 
-*Docs are work in progress/unfinished*
+>#### Guide
+>**Display Eigenvectors**: Displays the local axes as lines on each point using a SOP guide DOP. Currently, toggling this "dirties" the sim because it toggles the _vis_eigens attribute's existence.
+>
+>**Guide Scale**: Scale of the local axes guide.
+>
+>**X Axis Color**: Color of the X/U axis guide.
+>
+>**X Axis Color**: Color of the Y/V axis guide.
+>
+>**X Axis Color**: Color of the Z/W axis guide.
+
+>#### Binding
+>**Geometry**: The name of the simulation data to apply the POP node to. This is commonly Geometry, but POP networks can be designed to apply to different geometry if desired.
