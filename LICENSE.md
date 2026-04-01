@@ -1,6 +1,6 @@
 BSD 3-Clause License
 
-Copyright (c) 2025, Conlen Breheny
+Copyright (c) 2026, Conlen Breheny
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
