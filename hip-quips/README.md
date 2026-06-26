@@ -14,6 +14,7 @@ Shows 3 methods of creating a "rest" coordinate system from the curve copied cir
 <img src="./docs/curve_rest_noise_billowy_noise.gif" alt="Curve Rest Billowy Noise" height="300" />
 
 | [Hip File](./volume-noise-along-curves/curve_rest_volume_noise_copy_circles_lines_v003.hipnc) |
+| --- |
 
 ### [Velocity pumps along curves](./velocity-pumps-along-curves/CurveCopyCirclesLinesTricks_Pumps_v005.hipnc)
 
@@ -23,3 +24,4 @@ Shows a method for creating velocity fields from curves using the curve copied c
 <img src="./docs/ExamplePumpvel_02.gif" alt="Curve Pumpvel 02" height="300" />
 
 | [Hip File](./velocity-pumps-along-curves/CurveCopyCirclesLinesTricks_Pumps_v005.hipnc) |
+| --- |
