@@ -1,5 +1,5 @@
 # cb-houdini-tools
-A collection of tools created for SideFX Houdini.
+A collection of various tools and hip files created for SideFX Houdini.
 
 Please feel free to tip if any of these tools help your workflow and you'd like to support me!  
 https://www.paypal.me/conlenb
@@ -10,3 +10,8 @@ https://www.paypal.me/conlenb
 - **[Optimal Transport SOP HDA:](/sinkhorn-based-log-domain-optimal-transport/sop_cb_optimal_transport.1.0.hdanc)** A Houdini Digital Asset (HDA) for the SOP level that provides a convenient wrapper over my Optimal Transport Python scripts.
 - **[Sinkhorn-Based Log Domain Optimal Transport:](/sinkhorn-based-log-domain-optimal-transport/SinkhornBasedLogDomainOptimalTransportHoudini.py)** A Python implementation of Optimal Transport that is sinkhorn based and performed in the log domain.
 - **[GPU Sinkhorn-Based Log Domain Optimal Transport:](/sinkhorn-based-log-domain-optimal-transport/GPUSinkhornBasedLogDomainOptimalTransportHoudini.py)** A Python GPU implementation of Optimal Transport that is sinkhorn based and performed in the log domain.
+
+## [Hip Quips!](/hip-quips/)
+Standalone hip files (not packaged tools) showing various techniques.
+
+**[Hip Quips Folder](/hip-quips/)**
