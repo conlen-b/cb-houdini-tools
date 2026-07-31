@@ -13,19 +13,28 @@ Connect the source points to transport in the first input, and the target points
 
 Select the compute type (GPU is only available if CuPy and NVIDIA CUDA Toolkit are installed; see the [GPU script description](#gpu-sinkhorn-based-log-domain-optimal-transport) for more info).
 
-Tune parameters as needed:  
-"Epsilon (smoothness)": Smoothness of the result, lower is more rigid, higher is more "blurred". Default 0.03.  
-"Min Iterations": Minimum iterations for transport to converge. Default 3.  
-"Max Iterations": Maximum iterations for transport to converge. Higher = more accurate, but slower to compute. Default 200.  
-"Tolerance": A tolerance threshold for when the result is considered converged. The lower the value, the more accurate the result will be, but it will also have higher potential to reach max iterations. Default 1e-08.  
-"Output Debug Attributes": Outputs the detail attributes `_ot_converge_type` and `_ot_iterations`. Iterations is the final number of iterations used. Converge type is the condition that was used to stop iterating (Error < Tolerance, Stagnation, or Max Iterations Reached). Default False.  
+Outputs the attribute ot_pos on the source points, which is the position of each point after optimal transport. See the [example hip file](./example-hip/) for example usage.
 
-Outputs the attribute ot_pos on the source points, which is the position of each point after optimal transport.
+### Parameters
+<img src="./docs/ui.png" alt="UI Window" />
+
+>**Compute Type**: Whether to use CPU or GPU with CuPy (GPU Requires CuPy and NVIDIA CUDA Toolkit installed, see [GPU script description](#gpu-sinkhorn-based-log-domain-optimal-transport) for more info).
+>
+>**Epsilon (Smoothness)**: Smoothness of the result, lower is more rigid, higher is more "blurred". Default 0.03.
+>
+>**Min Iterations**: Minimum iterations for transport to converge. Default 3.
+>
+>**Max Iterations**: aximum iterations for transport to converge. Higher = more accurate, but slower to compute. Default 200.
+>
+>**Tolerance**: A tolerance threshold for when the result is considered converged. The lower the value, the more accurate the result will be, but it will also have higher potential to reach max iterations. Default 1e-08.
+>
+>**Output Debug Attributes**: Outputs the detail attributes `_ot_converge_type` and `_ot_iterations`. Iterations is the final number of iterations used. Converge type is the condition that was used to stop iterating (Error < Tolerance, Stagnation, or Max Iterations Reached). Default False. 
+
 <br><br><br>
 
 
 
-# **[Sinkhorn-Based Log Domain Optimal Transport](./SinkhornBasedLogDomainOptimalTransportHoudini.py)**
+# **[Sinkhorn-Based Log Domain Optimal Transport Script](./SinkhornBasedLogDomainOptimalTransportHoudini.py)**
 [`SinkhornBasedLogDomainOptimalTransportHoudini.py`](./SinkhornBasedLogDomainOptimalTransportHoudini.py)
 
 An implementation of Optimal Transport that is sinkhorn based and performed in the log domain.  
@@ -67,7 +76,7 @@ You could potentially interpolate the output ot_pos from a sparser point cloud t
 
 
 
-# **[GPU Sinkhorn-Based Log Domain Optimal Transport](./GPUSinkhornBasedLogDomainOptimalTransportHoudini.py)**
+# **[GPU Sinkhorn-Based Log Domain Optimal Transport Script](./GPUSinkhornBasedLogDomainOptimalTransportHoudini.py)**
 [`GPUSinkhornBasedLogDomainOptimalTransportHoudini.py`](./GPUSinkhornBasedLogDomainOptimalTransportHoudini.py)
 
 A GPU implementation of Optimal Transport using CuPy (GPU drop-in for Numpy) that is sinkhorn based and performed in the log domain.  
