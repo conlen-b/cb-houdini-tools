@@ -3,6 +3,9 @@
 
 A Houdini Digital Asset (HDA) for the SOP level that provides a convenient wrapper over my Optimal Transport Python scripts below.
 
+https://github.com/user-attachments/assets/ab72bd16-ce38-445a-b258-ddc39c82729e
+
+
 ## How To Use:
 Import into Houdini with File > Import > Houdini Digital Asset.  
 In a SOP context network, search for "Optimal Transport".  
