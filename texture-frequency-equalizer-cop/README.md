@@ -1,11 +1,15 @@
 # **[Texture Frequency Equalizer Copernicus HDA](./cop_cb_texture_frequency_equalizer.1.0.hdalc)**
 [`cop_cb_texture_frequency_equalizer.1.0.hdalc`](./cop_cb_texture_frequency_equalizer.1.0.hdalc)  
+A Houdini Digital Asset (HDA) for the COP level that allows you to art-direct the 
+"lens texture" and modulation transfer function (MTF) of your images.
+
 Cinematographers obsess over the softness and sharpness of their images, deliberating over lens choice, shooting settings, and post production decisions to dial in the textural look that suits their creative vision.
 
 As CG artists, we too often ship our renders out of the box, perhaps with just a small amateurish blur to "fix" CG's unnatural sharpness.
 
 With this Houdini Copernicus HDA, unlock tools used by Cinematographers and Colorists in professional Finishing software such as FilmLight's Baselight and DaVinci Resolve! Sculpt the softness and sharpness of your image across different sizes of detail to achieve a more photographic and cinematic result, all in the pursuit of your creative and narrative intent.
 
+This is a Houdini port of the Texture Frequency Equalizer [Nuke gizmo](https://conlen.gumroad.com/l/texfreqeqnuke/) created by myself alongside [Gabriel Martinez](https://www.linkedin.com/in/gabriel-martinez-b5a5a5235/). Thank you to [Hallam Roberts](https://github.com/MysteryPancake/) for the OpenCL help with rendering the `Use Test Waveform` visualizer.
 
 
 ## How To Use:
