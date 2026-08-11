@@ -5,7 +5,7 @@ A Houdini Digital Asset (HDA) for the COP level that allows you to art-direct th
 
 Cinematographers obsess over the softness and sharpness of their images, deliberating over lens choice, shooting settings, and post production decisions to dial in the textural look that suits their creative vision.
 
-As CG artists, we too often ship our renders out of the box, perhaps with just a small amateurish blur to "fix" CG's unnatural sharpness.
+As CG artists, we too often ship our renders out of the box, perhaps with just a small blur to "fix" CG's unnatural sharpness.
 
 With this Houdini Copernicus HDA, unlock tools used by Cinematographers and Colorists in professional Finishing software such as FilmLight's Baselight and DaVinci Resolve! Sculpt the softness and sharpness of your image across different sizes of detail to achieve a more photographic and cinematic result, all in the pursuit of your creative and narrative intent.
 
