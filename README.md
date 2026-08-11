@@ -14,5 +14,5 @@ Standalone hip files (not packaged tools) showing various techniques.
 - **[POP Interaction Forces HDA:](/pop-interaction-forces/)** A Houdini Digital Asset (HDA) for the DOP level implementing DreamWorks Animation's paper "Shaping Particle Simulations with Interaction Forces" (Can Yuksel et al.). This tool enables complex and art-directable particle motion and shaping derived from the existing intrinsic qualities of the particle field.
 - **[Optimal Transport SOP HDA:](/sinkhorn-based-log-domain-optimal-transport/)** A Houdini Digital Asset (HDA) for the SOP level that provides a convenient wrapper over my Optimal Transport Python scripts.
 - **[Copy Parms To Other Node:](/copy-parms-to-other-node/)** A Python script to copy a parm or all parms in source parm folder from source node to the destination node.
-- **[Texture Frequency Equalizer COP HDA:](/sinkhorn-texture-frequency-equalizer-cop/)** A Houdini Digital Asset (HDA) for the COP level that allows you to art-direct the 
+- **[Texture Frequency Equalizer COP HDA:](/texture-frequency-equalizer-cop/)** A Houdini Digital Asset (HDA) for the COP level that allows you to art-direct the 
 "lens texture" and modulation transfer function (MTF) of your images.
