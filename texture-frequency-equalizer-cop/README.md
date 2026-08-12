@@ -16,7 +16,9 @@ This is a Houdini port of the Texture Frequency Equalizer [Nuke gizmo](https://c
 Example .hip file here:  
 [`TextureFrequencyEqualizerCOP_v008.hiplc`](./example-hip/TextureFrequencyEqualizerCOP_v008.hiplc)
 
-TODO: Insert YouTube Video
+### [YouTube Tutorial](https://www.youtube.com/watch?v=7U1yTxcH43c)-
+[![YouTube Tutorial](https://img.youtube.com/vi/7U1yTxcH43c/0.jpg)](https://www.youtube.com/watch?v=7U1yTxcH43c)  
+*(Clicking the above image links to the video)*
 
 ### Parameters
 <img src="./docs/ui.png" alt="UI Window" />
