@@ -14,7 +14,7 @@ This is a Houdini port of the Texture Frequency Equalizer [Nuke gizmo](https://c
 
 ## How To Use:
 Example .hip file here:  
-[`TextureFrequencyEqualizerCOP_v008.hiplc`](./example-hip/TextureFrequencyEqualizerCOP_v008.hiplc)
+[`TextureFrequencyEqualizerCOP_v009.hiplc`](./example-hip/TextureFrequencyEqualizerCOP_v009.hiplc)
 
 ### [YouTube Tutorial](https://www.youtube.com/watch?v=7U1yTxcH43c)-
 [![YouTube Tutorial](https://img.youtube.com/vi/7U1yTxcH43c/0.jpg)](https://www.youtube.com/watch?v=7U1yTxcH43c)  

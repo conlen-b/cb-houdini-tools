@@ -1,5 +1,5 @@
-# **[Texture Frequency Equalizer Copernicus HDA Example Hip](./TextureFrequencyEqualizerCOP_v008.hiplc)**
-[`TextureFrequencyEqualizerCOP_v008.hiplc`](./TextureFrequencyEqualizerCOP_v008.hiplc)
+# **[Texture Frequency Equalizer Copernicus HDA Example Hip](./TextureFrequencyEqualizerCOP_v009.hiplc)**
+[`TextureFrequencyEqualizerCOP_v009.hiplc`](./TextureFrequencyEqualizerCOP_v009.hiplc)
 
 An example Houdini .hip file that shows an example usecase for my Texture Frequency Equalizer Copernicus HDA. Test image not provided, so replace it with your own.
 
