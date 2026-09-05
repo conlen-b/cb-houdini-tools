@@ -82,15 +82,52 @@ You could potentially interpolate the output ot_pos from a sparser point cloud t
 A GPU implementation of Optimal Transport using CuPy (GPU drop-in for Numpy) that is sinkhorn based and performed in the log domain.  
 Based off of the algorithm outlined in Remark 4.23 "Computational Optimal Transport" (2019) by Gabriel Peyré & Marco Cuturi https://arxiv.org/abs/1803.00567
 
-Assumes Cuda + CuPy version 13.x:  
-Requires CuPy to be installed in the Houdini environment, can be done with this console command:  
-"[PROGRAM_FILES_PATH]\Side Effects Software\Houdini [VERSION]\bin\hython.exe" -m pip install cupy-cuda13x  
-^Switch the Houdini version and cupy cuda version as needed
+Requires the Cuda developer toolkit to be installed, CuPy to be installed in the Houdini Python environment, and for the ``CUDA_PATH`` and ``PATH`` environment variables to point to the Cuda Developer toolkit.
 
-Requires the NVIDIA CUDA Toolkit matching your Cuda version eg. 13  
-Houdini's path may need to append:  
-PATH = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin;&"  
-CUDA_PATH = "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin;&"
+Check your GPU to see what version of Cuda it supports, and install the corresponding CuPy and Cuda Developer Toolkits of matching versions.
+
+Tested with [Cuda Developer Toolkit 13.0.2](https://developer.nvidia.com/cuda-13-0-2-download-archive) + [cupy-cuda13x 13.6.0](https://pypi.org/project/cupy-cuda13x/13.6.0/) on Windows 10 on an RTX 3090.
+
+The recommended method for installing CuPy in the Python Environment and setting the proper environment variables is to use a package:
+1. Go to your Houdini preferences packages folder (eg. ``C:\Users\[USERNAME]\Documents\houdini21.0\packages``)
+2. Create a folder called ``cupy``
+3. Inside of that folder, create a folder called ``python[PYVERSION]libs`` (For Houdini 21 [PYVERSION] is ``3.11``; other versions of Houdini may use a different Python version)
+4. Open a terminal and run the following command (edit the `[PROGRAM_FILES_PATH]`, `[VERSION]`, ``[HOUDINI_PACKAGES_PATH]``, ``[PYVERSION]``, and ``[CUDAVERSION]`` to the path to your program files, the correct Houdini version, your Houdini packages path, your Houdini Python version, and your Cuda version (eg. ``13``) respectively): 
+    ```
+    "[PROGRAM_FILES_PATH]\Side Effects Software\Houdini [VERSION]\bin\hython.exe" -m pip install --target=[HOUDINI_PACKAGES_PATH]\cupy\python[PYVERSION]libs cupy-cuda[CUDAVERSION]x
+    ```
+5. In your Houdini preferences packages folder, create a file ``cupy.json``
+6. Set the contents of ``cupy.json`` to (Adjust the path to the CUDA GPU Computing Toolkit correctly):
+    ```
+    {
+        "enable" : true,
+        "show" : true,
+        "load_package_once" : true,
+        "hpath": "$HOUDINI_PACKAGE_PATH/cupy",
+        "env": [
+            {
+                "PATH" : {
+                    "value": "[PROGRAM_FILES_PATH]/NVIDIA GPU Computing Toolkit/CUDA/v##.#/bin",
+                    "method": "prepend"
+                },
+                "CUDA_PATH" : {
+                    "value": "[PROGRAM_FILES_PATH]/NVIDIA GPU Computing Toolkit/CUDA/v##.#",
+                    "method": "prepend"
+                }
+            }
+        ]
+    }
+    ```
+7. Your Houdini preferences folder should now look like this:
+    ```text
+        ├── houdini##.#
+            ├── packages/
+                ├── cupy.json
+                └── /cupy
+                    ├── python#.##libs
+                        ├── cupy
+                        ├── [Various other folders containing cupy dependencies]
+    ```
 
 Heavily commented in the form of notes/documentation for myself as I was learning this.
 

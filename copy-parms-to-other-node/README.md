@@ -5,24 +5,47 @@ A script to copy a parm or all parms in source parm folder from source node to t
 
 ## Installation
 1. Download the folder `copy-parms-to-other-node`.
-2. Move the files to Houdini's `packages` folder:
+2. Move the files to Houdini's `packages` folder (eg. ``C:\Users\[USERNAME]\Documents\houdini21.0\packages``):
    - Copy the `copy-parms-to-other-node` folder into Houdini's `packages` directory
    - Inside the `copy-parms-to-other-node` folder, copy the `copy-parms-to-other-node.json` file and place it directly into Houdini's `packages` directory
         - On Windows `C:\Users\[USERNAME]\Documents\Houdini[VERSION]\packages`
 
     **Example Folder Structure:**  
     ```text
-    ├── houdini21.0
+    ├── houdini##.#
         ├── packages/
             ├── copy-parms-to-other-node.json
             └── /copy-parms-to-other-node
                 └── (package files incl. copyParmsToOtherNode folder)
     ```
-3. Install QtPy:
-   - Open Command Prompt
-   - Run the following command (edit the `[PROGRAM_FILES_PATH]` and `[VERSION]` to the path to your program files and the correct Houdini version respectively):  
-        ```sh
-        "[PROGRAM_FILES_PATH]\Side Effects Software\Houdini [VERSION]\bin\hython.exe" -m pip install QtPy
+3. Install QtPy:  
+    The recommended method to install QtPy is with Houdini packages:
+    1. Go back to your Houdini ``packages`` folder
+    2. Create a folder called ``qtpy``
+    3. Inside of that folder, create a folder called ``python[PYVERSION]libs`` (For Houdini 21 [PYVERSION] is ``3.11``; other versions of Houdini may use a different Python version)
+    4. Open a terminal and run the following command (edit the `[PROGRAM_FILES_PATH]`, `[VERSION]`, ``[HOUDINI_PACKAGES_PATH]``, and ``[PYVERSION]`` to the path to your program files, the correct Houdini version, your Houdini packages path, and your Houdini Python version respectively):
+        ```
+        "[PROGRAM_FILES_PATH]\Side Effects Software\Houdini [VERSION]\bin\hython.exe" -m pip install --target=[HOUDINI_PACKAGES_PATH]\QtPy\python[PYVERSION]libs QtPy
+        ```
+    5. In your Houdini preferences packages folder, create a file ``qtpy.json``
+    6. Set the contents of ``qtpy.json`` to:
+        ```text
+            {
+                "enable" : false,
+                "show" : true,
+                "load_package_once" : true,
+                "hpath": "$HOUDINI_PACKAGE_PATH/qtpy"
+            }
+        ```
+    7. Your Houdini preferences folder should now also contain these directories:
+        ```text
+            ├── houdini##.#
+                ├── packages/
+                    ├── qtpy.json
+                    └── /qtpy
+                        ├── python#.##libs
+                            ├── qtpy
+                            ├── [Various other folders containing QtPy dependencies]
         ```
 
 ## Shelf Button Creation
