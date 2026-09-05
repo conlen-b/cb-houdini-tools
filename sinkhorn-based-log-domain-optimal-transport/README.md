@@ -107,11 +107,11 @@ The recommended method for installing CuPy in the Python Environment and setting
         "env": [
             {
                 "PATH" : {
-                    "value": "[PROGRAM_FILES_PATH]/NVIDIA GPU Computing Toolkit/CUDA/v##.#/bin",
+                    "value": "[PROGRAM_FILES_PATH]/NVIDIA GPU Computing Toolkit/CUDA/v[CDK_VERSION]/bin",
                     "method": "prepend"
                 },
                 "CUDA_PATH" : {
-                    "value": "[PROGRAM_FILES_PATH]/NVIDIA GPU Computing Toolkit/CUDA/v##.#",
+                    "value": "[PROGRAM_FILES_PATH]/NVIDIA GPU Computing Toolkit/CUDA/v[CDK_VERSION]",
                     "method": "prepend"
                 }
             }
