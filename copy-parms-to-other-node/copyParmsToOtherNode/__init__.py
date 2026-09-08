@@ -3,15 +3,15 @@
 """
 copyParmsToOtherNode
 A script to copy a parm or all parms in source parm folder from source node to the destination node.
-Updated 12/10/2026
+Updated 9/8/2026
 
 Information and instructions on GitHub:
 https://github.com/conlen-b/cb-houdini-tools/blob/main/copy-parms-to-other-node/CopyParmsToOtherNode.py
 """
 
 __author__ = "Conlen Breheny"
-__copyright__ = "Copyright 2025, Conlen Breheny"
-__version__ = "1.3.1" #Major.Minor.Patch
+__copyright__ = "Copyright 2026, Conlen Breheny"
+__version__ = "1.4.0" #Major.Minor.Patch
 
 import logging
 

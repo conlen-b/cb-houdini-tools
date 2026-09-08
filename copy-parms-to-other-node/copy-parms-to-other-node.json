@@ -1,13 +1,16 @@
 {
-  "env": [
-    {
-      "COPY_PARMS_TO_OTHER_NODE": "$HOUDINI_PACKAGE_PATH/copy-parms-to-other-node"
-    },
-    {
-      "HOUDINI_PATH": "$COPY_PARMS_TO_OTHER_NODE"
-    },
-    {
-      "PYTHONPATH": "$COPY_PARMS_TO_OTHER_NODE"
-    }
-  ]
+    "enable" : true,
+    "show" : true,
+    "load_package_once" : true,
+    "env": [
+        {
+            "COPY_PARMS_TO_OTHER_NODE": "$HOUDINI_PACKAGE_PATH/copy-parms-to-other-node"
+        },
+        {
+            "HOUDINI_PATH": "$COPY_PARMS_TO_OTHER_NODE"
+        },
+        {
+            "PYTHONPATH": "$COPY_PARMS_TO_OTHER_NODE"
+        }
+    ]
 }
