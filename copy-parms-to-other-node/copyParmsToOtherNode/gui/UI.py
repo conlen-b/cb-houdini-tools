@@ -114,6 +114,8 @@ class NodeFieldWithButton(QtWidgets.QWidget):
         self.field = NodeField(self)
         self.chooser = hou.qt.NodeChooserButton()
 
+        self.chooser.installEventFilter(self)
+
         grid_layout = hou.qt.GridLayout()
         grid_layout.setColumnStretch(0, 1)  # Input field expands
         grid_layout.setColumnStretch(1, 0)  # Button column fixed
@@ -165,16 +167,24 @@ class NodeFieldWithButton(QtWidgets.QWidget):
         """
         Set the chooser's initial node to the node at the field's current path, or
         clear it if the path is blank or invalid.
-
-        :return: Void
         """
         path = self.field.text()
-        node = hou.node(path) if path else None
+        node = None
+
+        if path:
+            try:
+                candidate = hou.node(path)
+                # Verify candidate is valid
+                if candidate is not None:
+                    node = candidate
+            except (hou.OperationFailed, hou.ObjectWasDeleted):
+                node = None
 
         try:
             self.chooser.setNodeChooserInitialNode(node)
-        except hou.OperationFailed as error:
-            logger.warning(f"Could not set node chooser initial node to '{path}': {error}")
+        except (hou.OperationFailed, hou.ObjectWasDeleted) as error:
+            logger.warning(f"Could not set node chooser initial node for '{path}': {error}")
+            self.chooser.setNodeChooserInitialNode(None)
 
     def text(self) -> str:
         """

@@ -11,7 +11,7 @@ https://github.com/conlen-b/cb-houdini-tools/blob/main/copy-parms-to-other-node/
 
 __author__ = "Conlen Breheny"
 __copyright__ = "Copyright 2026, Conlen Breheny"
-__version__ = "1.4.0" #Major.Minor.Patch
+__version__ = "1.4.1" #Major.Minor.Patch
 
 import logging
 
