@@ -8,6 +8,7 @@ TODO: Make a method _create_connections (see Mauricio's example) to create conne
 
 import logging
 import hou
+from typing import List, Optional
 import nodegraphquicknav #From $HFS/houdini/python3.11libs/nodegraphquicknav.py
 from ..core.CopyParmsToOtherNode import _copy_parms_to_other_node as CopyParmsToOtherNode
 try:
@@ -203,6 +204,168 @@ class NodeFieldWithButton(QtWidgets.QWidget):
         """
         self.field.setText(text)
 
+class ParmDropLineEdit(QtWidgets.QLineEdit):
+    """
+    QLineEdit that accepts a parameter dragged from Houdini's parameter editor
+    or network view, setting its own text to the dropped parameter's name. If
+    no parameter can be resolved from the dropped data, falls back to setting
+    the field's text to the plain dropped text instead.
+    """
+
+    def __init__(self, parent : QtWidgets.QWidget = None) -> None:
+        """
+        Initializes the ParmDropLineEdit.
+
+        :param parent: Parent widget.
+        :return: Void
+        """
+        super(ParmDropLineEdit, self).__init__(parent)
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, event : QtCore.QEvent) -> None:
+        """
+        Override parent method to accept any drag, since format checking
+        happens on drop.
+
+        :param event: The Qt drag event.
+        :return: Void
+        """
+        event.acceptProposedAction()
+
+    def dragMoveEvent(self, event : QtCore.QEvent) -> None:
+        """
+        Override parent method to keep accepting the drag as it moves over
+        the field.
+
+        :param event: The Qt drag event.
+        :return: Void
+        """
+        event.acceptProposedAction()
+
+    def dropEvent(self, event : QtCore.QEvent) -> None:
+        """
+        Override parent method to resolve a dropped Houdini parameter (or
+        group of vector-component parameters) and set this field's text to
+        the resolved name. If nothing can be resolved, falls back to setting
+        the field's text to the plain dropped text instead.
+
+        :param event: The Qt drop event.
+        :return: Void
+        """
+        name = self._resolve_parm_name(event.mimeData())
+        if name is not None:
+            self.setText(name)
+        elif event.mimeData().hasText():
+            self.setText(event.mimeData().text())
+        event.acceptProposedAction()
+
+    def _resolve_parm_name(self, mime_data : QtCore.QMimeData) -> Optional[str]:
+        """
+        Resolve the logical parameter name from dragged mime data. Handles
+        both single scalar parameters and multi-component vector parameters -
+        dragging a vector field (e.g. Scale) drops several component paths
+        (e.g. sx/sy/sz) tab-separated in one payload, which this collapses
+        back down to a shared base name (e.g. 's').
+
+        :param mime_data: The dragged QMimeData.
+        :return: The resolved name, or None if resolution failed.
+        """
+        paths = self._extract_parm_paths(mime_data)
+        if not paths:
+            return None
+
+        names = []
+        for path in paths:
+            parm = self._parse_parm_path(path)
+            if parm is None:
+                return None
+            names.append(parm.name())
+
+        if len(names) == 1:
+            return names[0]
+
+        return self._common_vector_base_name(names)
+
+    def _extract_parm_paths(self, mime_data : QtCore.QMimeData) -> List[str]:
+        """
+        Extract one or more parm path strings from mime data, preferring
+        Houdini's dedicated parm-path mime format (tab-separated paths for
+        multi-component parameters) and falling back to generic text.
+
+        :param mime_data: The dragged QMimeData.
+        :return: List of candidate path strings (possibly empty).
+        """
+        houdini_format = "application/sidefx-houdini-parm.path"
+        if houdini_format in mime_data.formats():
+            raw = bytes(mime_data.data(houdini_format)).decode("utf-8", errors="ignore")
+            paths = [p.strip() for p in raw.split("\t") if p.strip()]
+            if paths:
+                return paths
+
+        if mime_data.hasText():
+            text = mime_data.text().strip()
+            if text:
+                return [text]
+
+        return []
+
+    def _parse_parm_path(self, text : str) -> Optional[hou.Parm]:
+        """
+        Try to pull a parm path out of a raw string and resolve it, handling
+        both bare paths (e.g. '/obj/geo1/box1.tx') and channel reference
+        expressions (e.g. 'ch("../box1/tx")').
+
+        :param text: Candidate string possibly containing a parm reference.
+        :return: The resolved hou.Parm, or None if not resolvable.
+        """
+        text = text.strip()
+
+        #Strip a wrapping ch(...)/chs(...) call if present.
+        for wrapper in ("ch(", "chs("):
+            if text.startswith(wrapper) and text.endswith(")"):
+                text = text[len(wrapper):-1].strip().strip('"').strip("'")
+                break
+
+        try:
+            parm = hou.parm(text)
+            if parm is not None:
+                return parm
+        except hou.OperationFailed:
+            pass
+
+        return None
+
+    def _common_vector_base_name(self, names : List[str]) -> Optional[str]:
+        """
+        Given component parm names (e.g. ['sx', 'sy', 'sz'] or ['max1',
+        'max2', 'max3', 'max4']), determine the shared base name by
+        confirming every name shares the same prefix and its own last
+        character is a valid component suffix from the same suffix set
+        (xyzw or 1234).
+
+        :param names: List of component parm names.
+        :return: The shared base name, or None if the names don't form a
+            consistent vector component group.
+        """
+        suffix_sets = ("xyzw", "1234")
+        prefixes = set()
+        suffixes = []
+        for name in names:
+            if not name:
+                return None
+            prefixes.add(name[:-1])
+            suffixes.append(name[-1])
+
+        if len(prefixes) != 1:
+            return None
+        base = prefixes.pop()
+
+        for suffix_set in suffix_sets:
+            if all(suffix in suffix_set for suffix in suffixes):
+                return base
+
+        return None
+
 class CopyParmsUI(QtWidgets.QMainWindow):
     """
     GUI window for copying parameters from one Houdini node to another.
@@ -230,7 +393,7 @@ class CopyParmsUI(QtWidgets.QMainWindow):
         super(CopyParmsUI, self).__init__(parent)
 
         #Run QMainWindow methods to initialize window
-        self.resize(500, 200)
+        self.resize(500, 230)
         # Set object name and window title
         self.setObjectName(CopyParmsUI.WINDOW_NAME)
         self.setWindowTitle(CopyParmsUI.WINDOW_TITLE)
@@ -276,27 +439,33 @@ class CopyParmsUI(QtWidgets.QMainWindow):
         grid_layout_source_destination.addWidget(label_info, 1, 1)
 
         #Source Name
-        self.input_source_name = hou.qt.InputField(hou.qt.InputField.StringType, 1)
+        self.input_source_name = ParmDropLineEdit()
         self._add_labeled_input_to_grid_layout(self.input_source_name,
                                             "Name",
                                             grid_layout_source_destination,
                                             2)
+
+        #Helper label reminding that the name field accepts parameter drops.
+        label_drop_hint = QtWidgets.QLabel("Parms can be dragged and dropped into this field")
+        label_drop_hint.setStyleSheet("color: gray; font-style: italic;")
+        label_drop_hint.setWordWrap(True)
+        grid_layout_source_destination.addWidget(label_drop_hint, 3, 1)
 
         #Source Label
         self.input_source_label = hou.qt.InputField(hou.qt.InputField.StringType, 1)
         self._add_labeled_input_to_grid_layout(self.input_source_label,
                                             "Label (Optional)",
                                             grid_layout_source_destination,
-                                            3)
+                                            4)
 
 
         #Destination Node
         label_destination_node = hou.qt.FieldLabel("Destination Node")
         label_destination_node.setFixedWidth(150)  # prevent clipping
-        grid_layout_source_destination.addWidget(label_destination_node, 4, 0)
+        grid_layout_source_destination.addWidget(label_destination_node, 5, 0)
 
         self.input_destination_node = NodeFieldWithButton()
-        grid_layout_source_destination.addWidget(self.input_destination_node, 4, 1)
+        grid_layout_source_destination.addWidget(self.input_destination_node, 5, 1)
 
         #Copy Button Layout
         button_layout = QtWidgets.QHBoxLayout()
@@ -314,7 +483,7 @@ class CopyParmsUI(QtWidgets.QMainWindow):
 
     def _add_labeled_input_to_grid_layout(
         self,
-        input_field : hou.qt.InputField,
+        input_field : QtWidgets.QWidget,
         label_text : str,
         layout : QtWidgets.QGridLayout,
         layout_row : int
@@ -348,7 +517,7 @@ class CopyParmsUI(QtWidgets.QMainWindow):
         :return: Void
         """
         src_node_name = self.input_source_node.text()
-        src_name = self.input_source_name.value(0)
+        src_name = self.input_source_name.text()
         src_label = self.input_source_label.value(0)
         dst_node_name = self.input_destination_node.text()
         if src_label:
