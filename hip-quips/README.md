@@ -4,6 +4,29 @@ Standalone hip files (not packaged tools) showing various techniques. Provided a
 Please feel free to tip if any of these files help and you'd like to support me!  
 https://www.paypal.me/conlenb
 
+## Multistream Solver SOP
+<table>
+  <tr>
+    <th><a href="./multistream-solver-sop/sop_cb_multistream_solver.1.0.hdalc">HDA Download</a></th>
+    <th><a href="./multistream-solver-sop/example-hip/SOPSolverDOP_MultipleGeometry_v002.hiplc">Hip File</a></th>
+  </tr>
+</table>
+<img src="./multistream-solver-sop/docs/MultistreamSolverSOP.jpg" alt="Dive Target" width="200" />
+
+The Solver SOP in Houdini only lets you modify one data stream. Internally, it uses a DOP network with a SOP Solver DOP; however, it uses the old version of the SOP Solver DOP. The ::2.0 version of the SOP Solver DOP has a "Invoke Compiled Block" parameter, which allows you to define extra outputs using compiled blocks.
+
+This means you can write to multiple geometry-type DOP data within one SOP Solver DOP, and when packaged into an HDA like this, you can solve up to 4 streams of data on the SOP level.
+
+This can still be treated like a regular Solver SOP if you only modify the geo1_out stream, but it also allows you to modify the other streams, which can be useful depending on your usecase.
+<figure>
+    <img src="./multistream-solver-sop/docs/MultistreamSolverSOP_DiveTarget.jpg" alt="Dive Target" height="300" />
+    <figcaption>Dive Target</figcaption>
+</figure>
+<figure>
+    <img src="./multistream-solver-sop/docs/MultistreamSolverSOP_InternalDopnet.jpg" alt="(Unlocked) Internal Dopnet" height="300" />
+    <figcaption>(Unlocked) Internal Dopnet</figcaption>
+</figure>
+
 ## Curve Coordinate System: Copy Circles + Lines
 These files both use one of my favorite techniques -- building a coordinate system along a curve by copying circles along the curve and then lines along the circles. I originally learned this methodology from Eric Araujo, and have since expanded it for various usecases.
 
