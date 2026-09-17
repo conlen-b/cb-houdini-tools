@@ -7,8 +7,8 @@ https://www.paypal.me/conlenb
 ## Multistream Solver SOP
 <table>
   <tr>
-    <th><a href="./multistream-solver-sop/sop_cb_multistream_solver.1.0.hdalc">HDA Download</a></th>
-    <th><a href="./multistream-solver-sop/example-hip/SOPSolverDOP_MultipleGeometry_v002.hiplc">Hip File</a></th>
+    <th><a href="./multistream-solver-sop/sop_cb_multistream_solver.1.0.hdalc?raw=true">HDA Download</a></th>
+    <th><a href="./multistream-solver-sop/example-hip/SOPSolverDOP_MultipleGeometry_v002.hiplc?raw=true">Hip File</a></th>
   </tr>
 </table>
 <img src="./multistream-solver-sop/docs/MultistreamSolverSOP.jpg" alt="Dive Target" width="200" />
@@ -31,16 +31,22 @@ This can still be treated like a regular Solver SOP if you only modify the geo1_
 These files both use one of my favorite techniques -- building a coordinate system along a curve by copying circles along the curve and then lines along the circles. I originally learned this methodology from Eric Araujo, and have since expanded it for various usecases.
 
 ### [Volume noise along curves](./curve-coordinate-system-copy-circles-lines/volume-noise-along-curves/curve_rest_volume_noise_copy_circles_lines_v003.hipnc)
-| [Hip File](./curve-coordinate-system-copy-circles-lines/volume-noise-along-curves/curve_rest_volume_noise_copy_circles_lines_v003.hipnc) |
-| --- |
+<table>
+  <tr>
+    <th><a href="./curve-coordinate-system-copy-circles-lines/volume-noise-along-curves/curve_rest_volume_noise_copy_circles_lines_v003.hipnc?raw=true">Hip File</a></th>
+  </tr>
+</table>
 
 Shows 3 methods of creating a "rest" coordinate system from the curve copied circles + line technique that can then be used to sample noise, either via rasterizing rest to a vector volume or by sampling the geometry rest attribute from another volume. See the sticky notes in the hip file for more info and detail.
 
 <img src="./curve-coordinate-system-copy-circles-lines/docs/curve_rest_noise_billowy_noise.gif" alt="Curve Rest Billowy Noise" height="300" />
 
 ### [Velocity pumps along curves](./curve-coordinate-system-copy-circles-lines/velocity-pumps-along-curves/CurveCopyCirclesLinesTricks_Pumps_v005.hipnc)
-| [Hip File](./curve-coordinate-system-copy-circles-lines/velocity-pumps-along-curves/CurveCopyCirclesLinesTricks_Pumps_v005.hipnc) |
-| --- |
+<table>
+  <tr>
+    <th><a href="./curve-coordinate-system-copy-circles-lines/velocity-pumps-along-curves/CurveCopyCirclesLinesTricks_Pumps_v005.hipnc?raw=true">Hip File</a></th>
+  </tr>
+</table>
 
 Shows a method for creating velocity fields from curves using the curve copied circles + line technique, where velocities along, around, and towards/away from the curve can be directed based on various controls. See the sticky notes in the hip file for more info and detail.
 
@@ -48,8 +54,11 @@ Shows a method for creating velocity fields from curves using the curve copied c
 <img src="./curve-coordinate-system-copy-circles-lines/docs/ExamplePumpvel_02.gif" alt="Curve Pumpvel 02" height="300" />
 
 ## f@curveu: UNIT vs UNITLEN
-| [Hip File](./unit-vs-unitlen-curveu/UNIT_vs_UNITLEN_curveu.hipnc) |
-| --- |
+<table>
+  <tr>
+    <th><a href="./unit-vs-unitlen-curveu/UNIT_vs_UNITLEN_curveu.hipnc?raw=true">Hip File</a></th>
+  </tr>
+</table>
 
 The f@curveu attribute is used quite commonly, but there is more than one way to measure it along a curve. For those unfamiliar, curveu is a float attribute that traditionally is 0.0 at the root/base/start of a curve, and 1.0 at the tip/end of a curve. For points in between the root and tip, the curveu is some value between 0 and 1 based on how much that point (or vertex, alternatively) is along the curve.
 
