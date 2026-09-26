@@ -1,4 +1,6 @@
 # **[Optimal Transport SOP HDA](./sop_cb_optimal_transport.1.0.hdanc)**
+<img src="./docs/thumbnail.jpg" alt="Thumbnail" />
+
 [`sop_cb_optimal_transport.1.0.hdanc`](./sop_cb_optimal_transport.1.0.hdanc)
 
 A Houdini Digital Asset (HDA) for the SOP level that provides a convenient wrapper over my Optimal Transport Python scripts below.

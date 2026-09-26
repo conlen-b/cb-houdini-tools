@@ -1,4 +1,6 @@
 # **[Texture Frequency Equalizer Copernicus HDA](./cop_cb_texture_frequency_equalizer.1.0.hdalc)**
+<img src="./docs/thumbnail.jpg" alt="Thumbnail" />
+
 [`cop_cb_texture_frequency_equalizer.1.0.hdalc`](./cop_cb_texture_frequency_equalizer.1.0.hdalc)  
 A Houdini Digital Asset (HDA) for the COP level that allows you to art-direct the 
 "lens texture" and modulation transfer function (MTF) of your images.

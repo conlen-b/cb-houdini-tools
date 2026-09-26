@@ -1,4 +1,6 @@
 # **[POP Interaction Forces HDA](./dop_cb_pop_interaction_forces.1.0.hdanc)**
+<img src="./docs/thumbnail.jpg" alt="Thumbnail" />
+
 [`dop_cb_pop_interaction_forces.1.0.hdanc`](./dop_cb_pop_interaction_forces.1.0.hdanc)  
 A Houdini Digital Asset (HDA) for the DOP level implementing DreamWorks Animation's paper ["Shaping Particle Simulations with Interaction Forces"](https://dl.acm.org/doi/10.1145/2614106.2614121) (Can Yuksel et al.). I referenced Juraj Tomori's (https://github.com/jtomori/) fantastic implementation of the paper as I was learning the theory, but I started from scratch and took a different approach on some of the core mechanics such as computing the LDNP centers and eigenvectors, and added some features to align with the design and UI of other POP nodes.
 
