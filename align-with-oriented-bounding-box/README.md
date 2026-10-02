@@ -8,6 +8,9 @@ This setup is useful if you have geometry without the proper attributes to resto
 
 
 ## How To Use:
+Example .hip file here:  
+[`AlignWithOrientedBoundingBox_v001.hiplc`](./example-hip/AlignWithOrientedBoundingBox_v001.hiplc)
+
 ### Parameters
 <img src="./docs/ui.jpg" alt="UI Window" />
 
