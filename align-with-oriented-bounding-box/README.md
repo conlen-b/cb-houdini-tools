@@ -1,4 +1,4 @@
-# **[Align With Oriented Bounding Box SOP HDA](./sop_cb_align_with_oriented_bounding_box.1.0.hdalc)**
+# **[Align With Oriented Bounding Box HDA](./sop_cb_align_with_oriented_bounding_box.1.0.hdalc)**
 <img src="./docs/thumbnail.jpg" alt="Thumbnail" />
 
 [`sop_cb_align_with_oriented_bounding_box.1.0.hdalc`](./sop_cb_align_with_oriented_bounding_box.1.0.hdalc)  
